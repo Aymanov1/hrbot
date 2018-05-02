@@ -24,14 +24,23 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.common.io.ByteStreams;
@@ -83,6 +92,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RestController
 @LineMessageHandler
 public class KitchenSinkController {
 	Logger log = LoggerFactory.getLogger(KitchenSinkController.class);
@@ -105,6 +115,26 @@ public class KitchenSinkController {
 		LocationMessageContent locationMessage = event.getMessage();
 		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
 				locationMessage.getLatitude(), locationMessage.getLongitude()));
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/webhook", method = RequestMethod.POST)
+	private Map<String, Object> webhook(@RequestBody Map<String, Object> obj) throws JSONException, IOException {
+
+		Map<String, Object> json = new HashMap<>();
+		JSONObject jsonResult = new JSONObject(obj);
+		JSONObject rsl = jsonResult.getJSONObject("originalRequest");
+		JSONObject data = rsl.getJSONObject("data");
+		JSONObject source = data.getJSONObject("source");
+		JSONObject message = data.getJSONObject("message");
+		String customerMessage = message.getString("text");
+		String timestamp = jsonResult.getString("timestamp");
+		JSONObject result = jsonResult.getJSONObject("result");
+		String resolvedQuery = result.getString("resolvedQuery");
+		JSONObject metadata = result.getJSONObject("metadata");
+		String intentName = metadata.getString("intentName");
+		JSONObject parameters = result.getJSONObject("parameters");
+		return json;
 	}
 
 	@EventMapping
