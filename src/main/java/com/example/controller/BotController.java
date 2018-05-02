@@ -80,8 +80,7 @@ import retrofit2.Response;
 public class BotController {
 	Logger logger = LoggerFactory.getLogger(BotController.class);
 
-	public static final String TOKEN = "OBna57cOodEGIIqhcSEjjpkjT0AUOl/AZNumYYcxT+H5T3ep6VRSXOOf5pyIRICy5QQ1ytWFUv1Ol5+1Pb2wOWk5+44idmC"
-			+ "jlP6vancpqEmWHw9YZHZ0/2H4qn1jCl3AZ88XIo2WkFPylumplMuSlAdB04t89/1O/w1cDnyilFU=";
+	public static final String TOKEN = "U0wNzlrKrSkVmZTmcYqa9/5nFFw97D3At7i4fvX55iMlXyo8oDH6y0qsJtszWcpD7C9IdvW9BFNSHA08g24qqqkKB8uj/5KSxcZ9AUUkn25Tz1sly0u76AHHmPJ9v1q/4DC3vQG+097JrmniWS06ywdB04t89/1O/w1cDnyilFU=";
 
 	@Autowired
 	LineMessagingClient lineMessagingClient;
@@ -105,18 +104,16 @@ public class BotController {
 	PushMessage pushMessage;
 	BotApiResponse botApiResponse;
 
-	
 	@EventMapping
-    public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
-        System.out.println("event: " + event);
-        return new TextMessage(event.getMessage().getText());
-    }
+	public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+		System.out.println("event: " + event);
+		return new TextMessage(event.getMessage().getText());
+	}
 
-    @EventMapping
-    public void handleDefaultMessageEvent(Event event) {
-        System.out.println("event: " + event);
-    }
-	
+	@EventMapping
+	public void handleDefaultMessageEvent(Event event) {
+		System.out.println("event: " + event);
+	}
 
 	private static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
