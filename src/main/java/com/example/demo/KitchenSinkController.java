@@ -113,7 +113,7 @@ public class KitchenSinkController {
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			system("convert", "-resize", "240x", jpg.path.toString(), previewImg.path.toString());
+			system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
 			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(),
 			// jpg.getUri()));
 		});
@@ -133,7 +133,7 @@ public class KitchenSinkController {
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent mp4 = saveContent("mp4", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			system("convert", mp4.path + "[0]", previewImg.path.toString());
+			system("convert", mp4.tempFile + "[0]", previewImg.tempFile.toString());
 			// reply(((MessageEvent) event).getReplyToken(), new VideoMessage(mp4.getUri(),
 			// previewImg.uri));
 		});
@@ -342,7 +342,7 @@ public class KitchenSinkController {
 		log.info("Got content-type: {}", responseBody);
 
 		DownloadedContent tempFile = createTempFile(ext);
-		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
+		try (OutputStream outputStream = Files.newOutputStream(tempFile.tempFile)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
 			log.info("Saved {}: {}", ext, tempFile);
 			return tempFile;
@@ -360,11 +360,14 @@ public class KitchenSinkController {
 
 	@Value
 	public static class DownloadedContent {
-		public DownloadedContent(Path tempFile, String createUri) {
-			// TODO Auto-generated constructor stub
-		}
 
-		Path path;
+		Path tempFile;
 		String uri;
+
+		public DownloadedContent(Path tempFile, String createUri) {
+			super();
+			this.tempFile = tempFile;
+			uri = createUri;
+		}
 	}
 }
