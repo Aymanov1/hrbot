@@ -121,21 +121,5 @@ public class EchoApplication {
 			uri = createUri;
 		}
 
-		public Path getTempFile() {
-			return tempFile;
-		}
-
-		public void setTempFile(Path tempFile) {
-			this.tempFile = tempFile;
-		}
-
-		public String getUri() {
-			return uri;
-		}
-
-		public void setUri(String uri) {
-			this.uri = uri;
-		}
-
 	}
 }
