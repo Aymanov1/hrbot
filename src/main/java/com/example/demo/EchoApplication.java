@@ -64,7 +64,7 @@ public class EchoApplication {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
 			log.info("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
-			pathImage.set(jpg.tempFile.toString() + " " + previewImg.tempFile.toString());
+			pathImage.set(jpg.uri);
 			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(),
 			// jpg.getUri()));
 		});
@@ -119,6 +119,22 @@ public class EchoApplication {
 			super();
 			this.tempFile = tempFile;
 			uri = createUri;
+		}
+
+		public Path getTempFile() {
+			return tempFile;
+		}
+
+		public void setTempFile(Path tempFile) {
+			this.tempFile = tempFile;
+		}
+
+		public String getUri() {
+			return uri;
+		}
+
+		public void setUri(String uri) {
+			this.uri = uri;
 		}
 
 	}
