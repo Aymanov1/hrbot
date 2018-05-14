@@ -60,16 +60,16 @@ public class EchoApplication {
 	public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		// You need to install ImageMagick
 		log.info("handle image path");
-		AtomicReference<String> pathImage = new AtomicReference<>();
+		// AtomicReference<String> pathImage = new AtomicReference<>();
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
 			log.info("image path" + previewImg.tempFile.toString());
-			pathImage.set(jpg.uri);
+			// pathImage.set(jpg.uri);
 			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(),
 			// jpg.getUri()));
 		});
-		return new TextMessage(pathImage.get());
+		return new TextMessage("finish image ");
 	}
 
 	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
