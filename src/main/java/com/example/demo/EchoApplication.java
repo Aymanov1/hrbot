@@ -75,12 +75,13 @@ public class EchoApplication {
 
 	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
-		log.info("Got content-type: {}", responseBody);
+//		log.info("Got content-type: {}", responseBody);
 
 		DownloadedContent tempFile = createTempFile(ext);
 		try (OutputStream outputStream = Files.newOutputStream(tempFile.tempFile)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
-			log.info("Saved {}: {}", ext, tempFile);
+//			log.info("Saved {}: {}", ext, tempFile);
+			log.info("tempFile "+tempFile);
 			return tempFile;
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
