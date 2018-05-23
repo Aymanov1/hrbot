@@ -69,7 +69,7 @@ public class EchoApplication {
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			log.info(previewImg.tempFile.toString());
+			log.info(previewImg.tempFile.getFileName().toString());
 
 		});
 
@@ -83,8 +83,7 @@ public class EchoApplication {
 		DownloadedContent tempFile = createTempFile(ext);
 		try (OutputStream outputStream = Files.newOutputStream(tempFile.tempFile)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
-			// log.info("Saved {}: {}", ext, tempFile);
-			log.info("tempFile " + tempFile);
+
 			return tempFile;
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
