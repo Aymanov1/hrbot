@@ -69,7 +69,7 @@ public class EchoApplication {
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			log.info("THE PATH IS " + previewImg.tempFile.getFileName().toString());
+			log.info("THE PATH IS " + jpg.tempFile.getFileName().toString());
 
 		});
 
@@ -78,7 +78,6 @@ public class EchoApplication {
 
 	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
-		// log.info("Got content-type: {}", responseBody);
 
 		DownloadedContent tempFile = createTempFile(ext);
 		try (OutputStream outputStream = Files.newOutputStream(tempFile.tempFile)) {
