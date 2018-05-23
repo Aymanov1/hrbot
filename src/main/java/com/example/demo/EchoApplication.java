@@ -69,7 +69,7 @@ public class EchoApplication {
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			log.info(previewImg.tempFile.getFileName().toString());
+			log.info("THE PATH IS " + previewImg.tempFile.getFileName().toString());
 
 		});
 
@@ -103,9 +103,11 @@ public class EchoApplication {
 	}
 
 	private static DownloadedContent createTempFile(String ext) {
+		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
 		String fileName = LocalDateTime.now().toString() + '-' + UUID.randomUUID().toString() + '.' + ext;
 		Path tempFile = EchoApplication.downloadedContentDir.resolve(fileName);
 		tempFile.toFile().deleteOnExit();
+		log.info("/downloaded/" + tempFile.getFileName());
 		return new DownloadedContent(tempFile, createUri("/downloaded/" + tempFile.getFileName()));
 
 	}
