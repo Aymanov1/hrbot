@@ -65,15 +65,13 @@ public class EchoApplication {
 	@EventMapping
 	public ImageMessageContent handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		// You need to install ImageMagick
-		log.info("handle image path");
-		log.info("event" + event.toString());
-		// handleHeavyContent(event.getReplyToken(), event.getMessage().getId(),
-		// responseBody -> {
-		// DownloadedContent jpg = saveContent("jpg", responseBody);
-		// DownloadedContent previewImg = createTempFile("jpg");
-		// log.info("image path" + previewImg.tempFile.toString());
-		//
-		// });
+
+		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
+			DownloadedContent jpg = saveContent("jpg", responseBody);
+			DownloadedContent previewImg = createTempFile("jpg");
+			log.info(previewImg.tempFile.toString());
+
+		});
 
 		return new ImageMessageContent(event.getMessage().getId());
 	}
