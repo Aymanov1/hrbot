@@ -82,7 +82,7 @@ public class EchoApplication {
 	@EventMapping
 	public ImageMessage handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		// You need to install ImageMagick
-		AtomicReference<ImageMessage> image = null;
+		AtomicReference<ImageMessage> image = new AtomicReference<ImageMessage>();
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
@@ -90,6 +90,8 @@ public class EchoApplication {
 			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
 			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
+				
+		
 		return image.get();
 	}
 
