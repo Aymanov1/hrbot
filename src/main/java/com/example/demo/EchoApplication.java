@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -79,14 +80,17 @@ public class EchoApplication {
 	}
 
 	@EventMapping
-	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
+	public ImageMessage handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		// You need to install ImageMagick
+		AtomicReference<ImageMessage> image = null;
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
 			system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
 			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
+			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
+		return image.get();
 	}
 
 	private void reply(@NonNull String replyToken, @NonNull Message message) {
