@@ -70,11 +70,11 @@ public class EchoApplication {
 		try {
 			Process start = processBuilder.start();
 			int i = start.waitFor();
-			log.info("result: {} =>  {}", Arrays.toString(args), i);
+			//log.info("result: {} =>  {}", Arrays.toString(args), i);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		} catch (InterruptedException e) {
-			log.info("Interrupted", e);
+			//log.info("Interrupted", e);
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -88,6 +88,7 @@ public class EchoApplication {
 			DownloadedContent previewImg = createTempFile("jpg");
 			system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
 			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
+			log.info(jpg.uri);
 			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
 				
