@@ -62,22 +62,8 @@ public class EchoApplication {
 		System.out.println("event: " + event);
 	}
 
-	// Method for push image to user
-	private void pushImage(String sourceId, String poster_url) {
-		ImageMessage imageMessage = new ImageMessage(poster_url, poster_url);
-		PushMessage pushMessage = new PushMessage(sourceId, imageMessage);
-		try {
-			Response<BotApiResponse> response = LineMessagingServiceBuilder.create(token).build()
-					.pushMessage(pushMessage).execute();
-			System.out.println(response.code() + " " + response.message());
-		} catch (IOException e) {
-			System.out.println("Exception is raised ");
-			e.printStackTrace();
-		}
-	}
-
 	@EventMapping
-	public TextMessage handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
+	public ImageMessageContent handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		// You need to install ImageMagick
 		log.info("handle image path");
 		log.info("event" + event.toString());
@@ -89,7 +75,7 @@ public class EchoApplication {
 		//
 		// });
 
-		return new TextMessage("finish image ");
+		return new ImageMessageContent(event.getMessage().getId());
 	}
 
 	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
