@@ -6,9 +6,11 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -20,21 +22,21 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.common.io.ByteStreams;
 import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.client.MessageContentResponse;
-import com.linecorp.bot.model.PushMessage;
+import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.ImageMessageContent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.ImageMessage;
+import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import lombok.NonNull;
 import lombok.Value;
-import retrofit2.Response;
 
 @SpringBootApplication
 @LineMessageHandler
@@ -62,19 +64,57 @@ public class EchoApplication {
 		System.out.println("event: " + event);
 	}
 
-	@EventMapping
-	public ImageMessageContent handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
-		// You need to install ImageMagick
+	private void system(String... args) {
+		ProcessBuilder processBuilder = new ProcessBuilder(args);
+		try {
+			Process start = processBuilder.start();
+			int i = start.waitFor();
+			log.info("result: {} =>  {}", Arrays.toString(args), i);
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		} catch (InterruptedException e) {
+			log.info("Interrupted", e);
+			Thread.currentThread().interrupt();
+		}
+	}
 
+	@EventMapping
+	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
+		// You need to install ImageMagick
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			log.info("THE PATH IS " + jpg.tempFile.getFileName().toString());
-
+			system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
+			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
 		});
-
-		return new ImageMessageContent(event.getMessage().getId());
 	}
+
+	private void reply(@NonNull String replyToken, @NonNull Message message) {
+		reply(replyToken, Collections.singletonList(message));
+	}
+
+	private void reply(@NonNull String replyToken, @NonNull List<Message> messages) {
+		try {
+			BotApiResponse apiResponse = lineMessagingClient.replyMessage(new ReplyMessage(replyToken, messages)).get();
+			log.info("Sent messages: {}", apiResponse);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	/*
+	 * @EventMapping public ImageMessageContent
+	 * handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws
+	 * IOException { // You need to install ImageMagick
+	 * 
+	 * handleHeavyContent(event.getReplyToken(), event.getMessage().getId(),
+	 * responseBody -> { DownloadedContent jpg = saveContent("jpg", responseBody);
+	 * DownloadedContent previewImg = createTempFile("jpg"); log.info("THE PATH IS "
+	 * + jpg.tempFile.getFileName().toString());
+	 * 
+	 * });
+	 * 
+	 * return new ImageMessageContent(event.getMessage().getId()); }
+	 */
 
 	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
