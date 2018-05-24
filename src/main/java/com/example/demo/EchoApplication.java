@@ -70,11 +70,11 @@ public class EchoApplication {
 		try {
 			Process start = processBuilder.start();
 			int i = start.waitFor();
-			//log.info("result: {} =>  {}", Arrays.toString(args), i);
+			// log.info("result: {} => {}", Arrays.toString(args), i);
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		} catch (InterruptedException e) {
-			//log.info("Interrupted", e);
+			// log.info("Interrupted", e);
 			Thread.currentThread().interrupt();
 		}
 	}
@@ -91,9 +91,9 @@ public class EchoApplication {
 			log.info(jpg.uri);
 			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
-				
-		
-		return image.get();
+
+		return new ImageMessage(event.getMessage().getId(), event.getMessage().getId());
+		// return image.get();
 	}
 
 	private void reply(@NonNull String replyToken, @NonNull Message message) {
