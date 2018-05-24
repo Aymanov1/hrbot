@@ -88,12 +88,13 @@ public class EchoApplication {
 			DownloadedContent previewImg = createTempFile("jpg");
 			system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
 			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
-			log.info(jpg.uri);
+			// log.info(jpg.uri);
 			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
+		log.info("test case image");
+		log.info(image.get().getOriginalContentUrl());
 
-		return new ImageMessage(event.getMessage().getId(), event.getMessage().getId());
-		// return image.get();
+		return image.get();
 	}
 
 	private void reply(@NonNull String replyToken, @NonNull Message message) {
