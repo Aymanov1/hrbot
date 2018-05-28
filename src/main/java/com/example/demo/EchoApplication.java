@@ -6,6 +6,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -87,7 +88,7 @@ public class EchoApplication {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			log.info("save content");
 			DownloadedContent previewImg = createTempFile("jpg");
-			log.info("preview image");
+			log.info("test case image");
 			// system("convert", "-resize", "240x", jpg.tempFile.toString(),
 			// previewImg.tempFile.toString());
 			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri,
@@ -171,10 +172,6 @@ public class EchoApplication {
 
 		Path tempFile;
 		String uri;
-
-		public DownloadedContent() {
-			super();
-		}
 
 		public DownloadedContent(Path tempFile, String createUri) {
 			super();
