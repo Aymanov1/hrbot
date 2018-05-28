@@ -80,21 +80,21 @@ public class EchoApplication {
 	}
 
 	@EventMapping
-	public ImageMessage handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
+	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		// You need to install ImageMagick
 		AtomicReference<ImageMessage> image = new AtomicReference<ImageMessage>();
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
 			DownloadedContent jpg = saveContent("jpg", responseBody);
 			DownloadedContent previewImg = createTempFile("jpg");
-			system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
-			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
+			//system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
+		//	reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
 			// log.info(jpg.uri);
 			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
 		log.info("test case image");
 		log.info(image.get().getOriginalContentUrl());
 
-		return image.get();
+		
 	}
 
 	private void reply(@NonNull String replyToken, @NonNull Message message) {
