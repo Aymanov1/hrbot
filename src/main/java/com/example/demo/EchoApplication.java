@@ -94,7 +94,7 @@ public class EchoApplication {
 			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri,
 			// jpg.uri));
 			// log.info(jpg.uri);
-			image.set(new ImageMessage(jpg.uri, jpg.uri));
+			image.set(new ImageMessage(jpg.getUri(), jpg.getUri()));
 		});
 		log.info("test case image");
 		log.info(image.get().getPreviewImageUrl().toString());
@@ -132,7 +132,7 @@ public class EchoApplication {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
 
 		DownloadedContent tempFile = createTempFile(ext);
-		try (OutputStream outputStream = Files.newOutputStream(tempFile.tempFile)) {
+		try (OutputStream outputStream = Files.newOutputStream(tempFile.getTempFile())) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
 
 			return tempFile;
