@@ -2,9 +2,7 @@ package com.example.demo;
 
 import java.nio.file.Path;
 
-import lombok.Value;
 
-@Value
 public class DownloadedContent {
 
 	private Path tempFile;
