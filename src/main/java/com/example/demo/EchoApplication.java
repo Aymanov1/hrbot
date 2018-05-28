@@ -84,17 +84,21 @@ public class EchoApplication {
 		// You need to install ImageMagick
 		AtomicReference<ImageMessage> image = new AtomicReference<ImageMessage>();
 		handleHeavyContent(event.getReplyToken(), event.getMessage().getId(), responseBody -> {
+			log.info("response body");
 			DownloadedContent jpg = saveContent("jpg", responseBody);
+			log.info("save content");
 			DownloadedContent previewImg = createTempFile("jpg");
-			//system("convert", "-resize", "240x", jpg.tempFile.toString(), previewImg.tempFile.toString());
-		//	reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri, jpg.uri));
+			log.info("preview image");
+			// system("convert", "-resize", "240x", jpg.tempFile.toString(),
+			// previewImg.tempFile.toString());
+			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri,
+			// jpg.uri));
 			// log.info(jpg.uri);
 			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
 		log.info("test case image");
-		log.info(image.get().getOriginalContentUrl());
+		log.info(image.get().getPreviewImageUrl().toString());
 
-		
 	}
 
 	private void reply(@NonNull String replyToken, @NonNull Message message) {
