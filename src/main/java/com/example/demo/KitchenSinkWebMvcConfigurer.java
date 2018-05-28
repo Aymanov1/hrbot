@@ -31,12 +31,12 @@ public class KitchenSinkWebMvcConfigurer extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-//        String downloadedContentUri = KitchenSinkApplication.downloadedContentDir
-//                .toUri().toASCIIString();
-//        log.info("downloaded dir: {}", downloadedContentUri);
-//        registry.addResourceHandler("/downloaded/**")
-//                .addResourceLocations(downloadedContentUri);
-//        registry.addResourceHandler("/static/**")
-//                .addResourceLocations("classpath:/static/");
+        String downloadedContentUri = EchoApplication.downloadedContentDir
+                .toUri().toASCIIString();
+        log.info("downloaded dir: {}", downloadedContentUri);
+        registry.addResourceHandler("/downloaded/**")
+                .addResourceLocations(downloadedContentUri);
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
     }
 }
