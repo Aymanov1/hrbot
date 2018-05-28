@@ -128,7 +128,7 @@ public class EchoApplication {
 	 * return new ImageMessageContent(event.getMessage().getId()); }
 	 */
 
-	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
+	private DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
 
 		DownloadedContent tempFile = createTempFile(ext);
@@ -153,7 +153,7 @@ public class EchoApplication {
 		messageConsumer.accept(response);
 	}
 
-	private static DownloadedContent createTempFile(String ext) {
+	private DownloadedContent createTempFile(String ext) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
 		String fileName = LocalDateTime.now().toString() + '-' + UUID.randomUUID().toString() + '.' + ext;
 		Path tempFile = EchoApplication.downloadedContentDir.resolve(fileName);
@@ -163,21 +163,9 @@ public class EchoApplication {
 
 	}
 
-	private static String createUri(String path) {
+	private String createUri(String path) {
+		log.info("this path is " + path);
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
 	}
 
-	@Value
-	public static class DownloadedContent {
-
-		Path tempFile;
-		String uri;
-
-		public DownloadedContent(Path tempFile, String createUri) {
-			super();
-			this.tempFile = tempFile;
-			uri = createUri;
-		}
-
-	}
 }
