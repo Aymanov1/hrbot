@@ -49,8 +49,8 @@ public class EchoApplication {
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 
-	public static void main(String[] args) {
-		Path downloadedContentDir;
+	public static void main(String[] args) throws IOException {
+		downloadedContentDir = Files.createTempDirectory("line-bot");
 		SpringApplication.run(EchoApplication.class, args);
 	}
 
