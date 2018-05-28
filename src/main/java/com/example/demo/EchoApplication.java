@@ -6,7 +6,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -94,7 +93,7 @@ public class EchoApplication {
 			// reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.uri,
 			// jpg.uri));
 			// log.info(jpg.uri);
-			image.set(new ImageMessage(jpg.getUri(), jpg.getUri()));
+			image.set(new ImageMessage(jpg.uri, jpg.uri));
 		});
 		log.info("test case image");
 		log.info(image.get().getPreviewImageUrl().toString());
@@ -128,11 +127,11 @@ public class EchoApplication {
 	 * return new ImageMessageContent(event.getMessage().getId()); }
 	 */
 
-	private DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
+	private static DownloadedContent saveContent(String ext, MessageContentResponse responseBody) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
 
 		DownloadedContent tempFile = createTempFile(ext);
-		try (OutputStream outputStream = Files.newOutputStream(tempFile.getTempFile())) {
+		try (OutputStream outputStream = Files.newOutputStream(tempFile.tempFile)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
 
 			return tempFile;
@@ -153,7 +152,7 @@ public class EchoApplication {
 		messageConsumer.accept(response);
 	}
 
-	private DownloadedContent createTempFile(String ext) {
+	private static DownloadedContent createTempFile(String ext) {
 		Logger log = LoggerFactory.getLogger(DownloadedContent.class);
 		String fileName = LocalDateTime.now().toString() + '-' + UUID.randomUUID().toString() + '.' + ext;
 		Path tempFile = EchoApplication.downloadedContentDir.resolve(fileName);
@@ -163,9 +162,25 @@ public class EchoApplication {
 
 	}
 
-	private String createUri(String path) {
-		log.info("this path is " + path);
+	private static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
 	}
 
+	@Value
+	public static class DownloadedContent {
+
+		Path tempFile;
+		String uri;
+
+		public DownloadedContent() {
+			super();
+		}
+
+		public DownloadedContent(Path tempFile, String createUri) {
+			super();
+			this.tempFile = tempFile;
+			uri = createUri;
+		}
+
+	}
 }
